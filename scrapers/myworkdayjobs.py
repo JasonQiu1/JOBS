@@ -18,18 +18,18 @@ data = {
 
 async def get_job(session, company, url, job_orig):
     curr_job = get_job_template()
-    curr_job['company'] = company
-    curr_job['link'] = url + job_orig['externalPath']
+    curr_job['job_info']['company'] = company
+    curr_job['job_info']['link'] = url + job_orig['externalPath']
 
-    detailed_job_orig = (await (await session.get(curr_job['link'], headers=headers, ssl=False)).json())['jobPostingInfo']
+    detailed_job_orig = (await (await session.get(curr_job['job_info']['link'], headers=headers, ssl=False)).json())['jobPostingInfo']
 
-    curr_job['platform_id'] = detailed_job_orig['id']
-    curr_job['title'] = detailed_job_orig['title']
-    curr_job['description'] = md(detailed_job_orig['jobDescription'])
+    curr_job['job_info']['platform_id'] = detailed_job_orig['id']
+    curr_job['job_info']['title'] = detailed_job_orig['title']
+    curr_job['job_info']['description'] = md(detailed_job_orig['jobDescription'])
 
-    curr_job['location'] = detailed_job_orig['location']
-    curr_job['posted_date'] = datetime.fromisoformat(detailed_job_orig['startDate']).isoformat()
-    curr_job['job_type'] = detailed_job_orig['timeType']
+    curr_job['job_info']['location'] = detailed_job_orig['location']
+    curr_job['job_info']['posted_date'] = datetime.fromisoformat(detailed_job_orig['startDate']).isoformat()
+    curr_job['job_info']['job_type'] = detailed_job_orig['timeType']
 
     try:
         update_job_id(curr_job)

@@ -49,18 +49,18 @@ async def get_job(session, company, job_soup):
     mdc = MarkdownConverter()
     curr_job = get_job_template()
 
-    curr_job['company'] = company
-    curr_job['title'] = str(job_soup.h2.string)
+    curr_job['job_info']['company'] = company
+    curr_job['job_info']['title'] = str(job_soup.h2.string)
 
     job_title_link_soup = job_soup.find('a', 'job-title-link')
-    curr_job['link'] = 'https://jobs.intel.com' + job_title_link_soup['href']
-    curr_job['platform_id'] = job_title_link_soup['data-job-id']
+    curr_job['job_info']['link'] = 'https://jobs.intel.com' + job_title_link_soup['href']
+    curr_job['job_info']['platform_id'] = job_title_link_soup['data-job-id']
 
-    job_detailed_soup = BeautifulSoup((await (await session.get(curr_job['link'], ssl=False)).text()), 'html.parser')
+    job_detailed_soup = BeautifulSoup((await (await session.get(curr_job['job_info']['link'], ssl=False)).text()), 'html.parser')
 
-    curr_job['location'] = str(job_detailed_soup.find('span', 'job-description__location-pin').string)
-    curr_job['job_type'] = mdc.convert_soup(job_detailed_soup.find('div', 'job-info-wrapper'))
-    curr_job['description'] = mdc.convert_soup(job_detailed_soup.find('div', 'ats-description'))
+    curr_job['job_info']['location'] = str(job_detailed_soup.find('span', 'job-description__location-pin').string)
+    curr_job['job_info']['job_type'] = mdc.convert_soup(job_detailed_soup.find('div', 'job-info-wrapper'))
+    curr_job['job_info']['description'] = mdc.convert_soup(job_detailed_soup.find('div', 'ats-description'))
 
     try:
         update_job_id(curr_job)

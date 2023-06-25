@@ -14,30 +14,41 @@ class Scraper:
 
 def get_job_template():
     job_template = {}
-    # DB fields
-    job_template['_id'] = ''
-    job_template['interest'] = 0
-    job_template['notes'] = ''
 
+    ## DB fields
+    job_template['_id'] = ''
+    job_template['last_scraped_date'] = datetime.now().isoformat()
+    job_template['first_scraped_date'] = job_template['last_scraped_date']
+
+    ## User fields
+    user_info = {}
+    user_info['interest'] = 0
+    user_info['notes'] = ''
+    job_template['user_info'] = user_info
+
+    ## Job fields
+    job_info = {}
     # Mandatory fields
-    job_template['link'] = ''
-    job_template['company'] = ''
-    job_template['title'] = ''
-    job_template['scraped_date'] = datetime.now().isoformat()
-    job_template['platform_id'] = ''
-    job_template['description'] = ''
+    job_info['link'] = ''
+    job_info['company'] = ''
+    job_info['title'] = ''
+    job_info['platform_id'] = ''
+    job_info['description'] = ''
     
     # Optional fields
-    job_template['location'] = 'Unknown'
-    job_template['job_type'] = 'Unknown'
-    job_template['posted_date'] = 'Unknown'
+    job_info['is_open'] = True # Find a way to see if app closes and set this to false
+    job_info['location'] = 'Unknown'
+    job_info['job_type'] = 'Unknown'
+    job_info['posted_date'] = 'Unknown'
+
+    job_template['job_info'] = job_info
 
     return job_template
 
 def update_job_id(job):
-    if job['company'] == '' or job['platform_id'] == '':
+    if job['job_info']['company'] == '' or job['job_info']['platform_id'] == '':
         raise ValueError("Company or platform id not filled in yet.")
-    job['_id'] = job['company'] + job['platform_id']
+    job['_id'] = job['job_info']['company'] + job['job_info']['platform_id']
 
 # For when SSL certificate is not installed
 # https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
