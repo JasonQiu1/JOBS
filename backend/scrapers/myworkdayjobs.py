@@ -1,6 +1,7 @@
 from . import Scraper, get_job_template, update_job_id
 import asyncio
 from aiohttp import ClientSession
+from urllib.parse import urlparse
 from markdownify import markdownify as md
 from datetime import datetime
 
@@ -16,16 +17,17 @@ data = {
         'searchText': '',
 }
 
-async def get_job(session, company, url, job_orig):
+async def get_job(session, company, url, link_prefix, job_orig):
     curr_job = get_job_template()
     curr_job['job_info']['company'] = company
-    curr_job['job_info']['link'] = url + job_orig['externalPath']
+    curr_job['job_info']['link'] = link_prefix + job_orig['externalPath']
 
-    detailed_job_orig = (await (await session.get(curr_job['job_info']['link'], headers=headers, ssl=False)).json())['jobPostingInfo']
+    detailed_job_orig = (await (await session.get(url + job_orig['externalPath'], headers=headers, ssl=False)).json())['jobPostingInfo']
 
     curr_job['job_info']['platform_id'] = detailed_job_orig['id']
     curr_job['job_info']['title'] = detailed_job_orig['title']
-    curr_job['job_info']['description'] = md(detailed_job_orig['jobDescription'])
+    #curr_job['job_info']['description'] = md(detailed_job_orig['jobDescription'])
+    curr_job['job_info']['description'] = detailed_job_orig['jobDescription']
 
     curr_job['job_info']['location'] = detailed_job_orig['location']
     curr_job['job_info']['posted_date'] = datetime.fromisoformat(detailed_job_orig['startDate']).isoformat()
@@ -42,13 +44,17 @@ class MyworkdayjobsScraper(Scraper):
     DOMAIN = 'myworkdayjobs'
     async def get_jobs(company, url):
         async with ClientSession() as session:
+            # create the job posting details link prefix
+            parsed_url = urlparse(url)
+            link_prefix = 'https://' + parsed_url.netloc + "/en-US/" + parsed_url.path.strip('/').split('/')[-1]
+
             # get job postings from website
             jobs_orig_json = await (await session.post(url + '/jobs', json=data, headers=headers, ssl=False)).json()
 
             num_jobs_found = jobs_orig_json['total']
             tasks = []
             for job_orig in jobs_orig_json['jobPostings']:
-                tasks.append(get_job(session, company, url, job_orig))
+                tasks.append(get_job(session, company, url, link_prefix, job_orig))
 
             all_jobs = await asyncio.gather(*tasks)
             return all_jobs

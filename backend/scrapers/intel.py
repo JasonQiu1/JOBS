@@ -59,8 +59,10 @@ async def get_job(session, company, job_soup):
     job_detailed_soup = BeautifulSoup((await (await session.get(curr_job['job_info']['link'], ssl=False)).text()), 'html.parser')
 
     curr_job['job_info']['location'] = str(job_detailed_soup.find('span', 'job-description__location-pin').string)
-    curr_job['job_info']['job_type'] = mdc.convert_soup(job_detailed_soup.find('div', 'job-info-wrapper'))
-    curr_job['job_info']['description'] = mdc.convert_soup(job_detailed_soup.find('div', 'ats-description'))
+    #curr_job['job_info']['job_type'] = mdc.convert_soup(job_detailed_soup.find('div', 'job-info-wrapper'))
+    #curr_job['job_info']['description'] = mdc.convert_soup(job_detailed_soup.find('div', 'ats-description'))
+    curr_job['job_info']['job_type'] = str(job_detailed_soup.find('div', 'job-info-wrapper').string)
+    curr_job['job_info']['description'] = str(job_detailed_soup.find('div', 'ats-description').string)
 
     try:
         update_job_id(curr_job)

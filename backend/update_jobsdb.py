@@ -14,7 +14,7 @@ COLLECTION_NAME = 'job_postings'
 JOBDB = MongoClient(JOBDB_URI)[JOBDB_NAME][COLLECTION_NAME]
 
 scrapers = dict([[scraper.DOMAIN, scraper] for scraper in Scraper.__subclasses__()])
-companies = [line.split() for line in open('companies.txt')]
+companies = [line.split() for line in open('../companies.txt')]
 
 if debug:
     print('Loaded scrapers:')
@@ -44,7 +44,7 @@ if debug:
 print(len(all_jobs), "total jobs scraped!")
 
 all_ids = list(map(lambda job : {'_id': job['_id']}, all_jobs))
-print(all_ids)
+#print(all_ids)
 
 id_query = { '$or': all_ids }
 # Update the last scraped date of all scraped job postings that are already in the db 
