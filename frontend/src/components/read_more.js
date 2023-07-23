@@ -9,13 +9,12 @@ export default function ReadMore(props:React.PropsWithChildren<MyProps>) {
     const [truncated, setTruncated] = useState("");
  
     const toggleLines = (e) => {
-        e.preventDefault();
+        // DON'T USE PREVENT DEFAULT, NEED TO REDIRECT TO WORK
         setExpanded(!expanded);
     }
 
-    return [
-        <div id={props.id} key={props.id + "linktarget"}></div>,
-            <Link key={props.id + 'link'} to={'/#' + props.id} style={{"textDecoration":"none", color:"black"}} onClick={toggleLines}>
+    return (
+        <a href={"#" + props.id} key={props.id + 'link'} style={{"textDecoration":"none", color:"black"}} onClick={toggleLines}>
                 {expanded ? props.children : (
                     <TruncateMarkup
                         lines={props.lines}
@@ -24,6 +23,6 @@ export default function ReadMore(props:React.PropsWithChildren<MyProps>) {
                         {props.children}
                     </TruncateMarkup>)}
                 <p><em>Click anywhere to read more or less!</em></p>
-            </Link>
-    ];
+        </a>
+    );
 };

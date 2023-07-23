@@ -12,6 +12,7 @@ const parse_options = {
 };
   
 const Record = (props) => [
+  <div id={props.record._id}></div>,
   <tr className='row_header' key={props.record._id + 'info'}>
 	<td><a target={"_blank"} href={props.record.job_info.link}>{props.record.job_info.title}</a></td>
 	<td>{props.record.job_info.company}</td>
