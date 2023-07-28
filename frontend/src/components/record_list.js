@@ -10,12 +10,25 @@ const parse_options = {
         }
     }
 };
+
+const month_to_name = ['January', 'Feburary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const date_format = (record) => {
+    const date = new Date(record.job_info.posted_date)
+    if (!isNaN(date)) {
+        return month_to_name[date.getMonth()] + " " + date.getDate()
+    } else {
+        const date = new Date(record.first_scraped_date)
+        return month_to_name[date.getMonth()] + " " + date.getDate()
+    }
+};
   
 const Record = (props) => [
   <div id={props.record._id}></div>,
   <tr className='row_header' key={props.record._id + 'info'}>
 	<td><a target={"_blank"} href={props.record.job_info.link}>{props.record.job_info.title}</a></td>
 	<td>{props.record.job_info.company}</td>
+	<td>{props.record.job_info.location}</td>
+	<td>{date_format(props.record)}</td>
     <td>
       <Link className="btn btn-link" to={`/edit/${props.record._id}`}>Edit</Link> |
       <button className="btn btn-link"
@@ -95,6 +108,8 @@ export default function RecordList() {
           <tr>
             <th>Title</th>
             <th>Company</th>
+            <th>Location</th>
+            <th>Posted Date</th>
             <th>Options</th>
           </tr>
         </thead>
