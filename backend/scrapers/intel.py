@@ -61,8 +61,8 @@ async def get_job(session, company, job_soup):
     curr_job['job_info']['location'] = str(job_detailed_soup.find('span', 'job-description__location-pin').string)
     #curr_job['job_info']['job_type'] = mdc.convert_soup(job_detailed_soup.find('div', 'job-info-wrapper'))
     #curr_job['job_info']['description'] = mdc.convert_soup(job_detailed_soup.find('div', 'ats-description'))
-    curr_job['job_info']['job_type'] = str(job_detailed_soup.find('div', 'job-info-wrapper').string)
-    curr_job['job_info']['description'] = str(job_detailed_soup.find('div', 'ats-description').string)
+    curr_job['job_info']['job_type'] = job_detailed_soup.find('div', 'job-info-wrapper').decode_contents()
+    curr_job['job_info']['description'] = job_detailed_soup.find('div', 'ats-description').decode_contents()
 
     try:
         update_job_id(curr_job)
