@@ -18,6 +18,7 @@ Document schema:
     '_id': `'company' concatenated with 'platform_id'`,
     'last_scraped_date': `Most recent date the job posting was scraped in ISODate format`,
     'first_scraped_date': `Date the job posting was first scraped in ISODate format`,
+    'first_posted_or_scraped_date': `Used for sorting the database. Uses posted_date if it exists, otherwise the first_scraped_date.`
     'user_info': {
         'interest': `-1 = rejected, 0 = undecided, 1 = low interest, 2 = med interest, 3 = high interest`,
         'notes': `User notes`

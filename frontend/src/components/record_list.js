@@ -13,13 +13,8 @@ const parse_options = {
 
 const month_to_name = ['January', 'Feburary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const date_format = (record) => {
-    const date = new Date(record.job_info.posted_date)
-    if (!isNaN(date)) {
-        return month_to_name[date.getMonth()] + " " + date.getDate()
-    } else {
-        const date = new Date(record.first_scraped_date)
-        return month_to_name[date.getMonth()] + " " + date.getDate()
-    }
+    const date = new Date(record.first_posted_or_scraped_date)
+    return month_to_name[date.getMonth()] + " " + date.getDate()
 };
   
 const Record = (props) => [

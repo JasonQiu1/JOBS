@@ -19,6 +19,7 @@ def get_job_template():
     job_template['_id'] = ''
     job_template['last_scraped_date'] = datetime.now().isoformat()
     job_template['first_scraped_date'] = job_template['last_scraped_date']
+    job_template['first_posted_or_scraped_date'] = job_template['last_scraped_date']
 
     ## User fields
     user_info = {}
@@ -49,6 +50,9 @@ def update_job_id(job):
     if job['job_info']['company'] == '' or job['job_info']['platform_id'] == '':
         raise ValueError("Company or platform id not filled in yet.")
     job['_id'] = job['job_info']['company'] + job['job_info']['platform_id']
+
+    if job['job_info']['posted_date'] != 'Unknown':
+        job['first_posted_or_scraped_date'] = job['job_info']['posted_date']
 
 # For when SSL certificate is not installed
 # https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org

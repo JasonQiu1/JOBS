@@ -9,7 +9,7 @@ const router = express.Router();
 // This section will help you get a list of all the records.
 router.get("/", async (req, res) => {
     let collection = await job_db.collection(process.env.COLLECTION_NAME);
-    let results = await collection.find({}).limit(req.body.num_records).toArray();
+    let results = await collection.find({}).sort({"first_post_or_scraped_date": -1}).limit(req.body.num_records).toArray();
     res.send(results).status(200);
 });
 
@@ -36,7 +36,7 @@ router.post("/", async (req, res) => {
     } else if (req.body.hasOwnProperty("num_records")) {
         console.log("Fetching " + req.body.num_records + " records...")
         let collection = await job_db.collection(process.env.COLLECTION_NAME);
-        let results = await collection.find({}).limit(req.body.num_records).toArray();
+        let results = await collection.find({}).sort({"first_posted_or_scraped_date": -1}).limit(req.body.num_records).toArray();
         console.log("Done!")
         res.send(results).status(200);
     }else {
